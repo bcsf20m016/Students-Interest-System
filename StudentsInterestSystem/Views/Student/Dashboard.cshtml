@@ -1,0 +1,425 @@
+﻿@model StudentsInterestSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<script src="~/ChartJS/Chart.min.js"></script>
+<script src="~/ChartJS/chartjs-plugin-colorschemes.js"></script>
+<script src="~/ChartJS/chartjs-plugin-datalabels.js"></script>
+<script src="~/ChartJS/chartjs-plugin-deferred.js"></script>
+
+<div class="text-center">
+    <h1>Dashboard</h1> <br /><br />
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h4>Top 5 Interests</h4>
+        <div class="d-flex flex-wrap">
+            @foreach (var interest in Model.TopInterests)
+            {
+                <div class="bg-light p-2 border me-2">
+                    @interest
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="d-flex flex-wrap justify-content-center align-items-center">
+            <div class="bg-light p-2 border me-2 text-center">
+                <h5>Distinct Interests</h5>
+                <h1 class="display-1">@Model.DistinctInterests</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <h4>Bottom 5 Interests</h4>
+        <div class="d-flex flex-wrap">
+            @foreach (var interest in Model.BottomInterests)
+            {
+                <div class="bg-light p-2 border me-2">
+                    @interest
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<br />
+
+<div class="row">
+    <div class="col-md-4">
+        <canvas id="ageChart" height="200px" width="200px"></canvas>
+    </div>
+    <div class="col-md-4">
+        <canvas id="departmentChart" height="200px" width="200px"></canvas>
+    </div>
+    <div class="col-md-4">
+        <canvas id="degreeChart" height="200px" width="200px"></canvas>
+    </div>
+</div>
+<br />
+<br />
+
+<div class="row">
+    <div class="col-md-6 d-flex align-items-center">
+        <canvas id="genderChart" style="max-height: 600px; max-width: 600px;"></canvas>
+    </div>
+
+    <div class="col-md-6 d-flex align-items-center">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Students Status</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total Students</td>
+                    <td>@Model.students.Count</td>
+                </tr>
+                <tr>
+                    <td>Studying</td>
+                    <td>@Model.StudentStats["studying"]</td>
+                </tr>
+                <tr>
+                    <td>Recently enrolled</td>
+                    <td>@Model.StudentStats["recently_enrolled"]</td>
+                </tr>
+                <tr>
+                    <td>About to graduate</td>
+                    <td>@Model.StudentStats["about_to_graduate"]</td>
+                </tr>
+                <tr>
+                    <td>Graduated</td>
+                    <td>@Model.StudentStats["graduated"]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<br />
+<br />
+
+<div class="row">
+    <div class="col-md-4">
+        <canvas id="submissionsChart" style="height: 400px; width: 400px;"></canvas>
+    </div>
+    <div class="col-md-4">
+        <canvas id="actionsChart" style="height: 400px; width: 400px;"></canvas>
+    </div>
+    <div class="col-md-4">
+        <canvas id="actionsByHoursChart" style="height: 400px; width: 400px;"></canvas>
+    </div>
+</div> <br /><br />
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="border p-3">
+            <table class="table table-sm table-borderless">
+                <tbody>
+                    <p><b>Most active hours in last 30 days</b></p>
+                    @foreach (var i in Model.MostActiveHours)
+                    {
+                        <tr>
+                            <td>-@i</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="border p-3">
+            <table class="table table-sm table-borderless">
+                <tbody>
+                    <p><b>Least active hours in last 30 days</b></p>
+                    @foreach (var i in Model.LeastActiveHours)
+                    {
+                        <tr>
+                            <td>- @i</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>
+
+<script>
+    var age = document.getElementById('ageChart').getContext('2d');
+    var department = document.getElementById('departmentChart').getContext('2d');
+    var degree = document.getElementById('degreeChart').getContext('2d');
+    var gender = document.getElementById('genderChart').getContext('2d');
+    var submissions = document.getElementById('submissionsChart').getContext('2d');
+    var actions = document.getElementById('actionsChart').getContext('2d');
+    var actionsByHour = document.getElementById('actionsByHoursChart').getContext('2d');
+
+    var ageChart = new Chart(age, {
+        type: 'bar',
+        data: {
+            labels: ['11-15', '16-20', '21-25', '26-30', '31-35', '36-40'],
+            datasets: [{
+                label: 'Number of Students',
+                data: [
+
+                    @Model.Ages.Count(s => s >= 11 && s <= 15),
+                    @Model.Ages.Count(s => s >= 16 && s <= 20),
+                    @Model.Ages.Count(s => s >= 21 && s <= 25),
+                    @Model.Ages.Count(s => s >= 26 && s <= 30),
+                    @Model.Ages.Count(s => s >= 31 && s <= 35),
+                    @Model.Ages.Count(s => s >= 36 && s <= 40)
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Age Distribution'
+                }
+            }
+        }
+    });
+    var departmentChart = new Chart(department, {
+        type: 'pie',
+        data: {
+            labels: ['Computer Science', 'Information Technology', 'Software Engineering'],
+            datasets: [{
+                label: '# of Students',
+                data: [
+                    @Model.students.Count(s => s.Department=="Computer Science"),
+                    @Model.students.Count(s => s.Department== "Information Technology"),
+                    @Model.students.Count(s => s.Department== "Software Engineering")
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Department Distribution'
+                }
+            }
+        }
+    });
+    var degreeChart = new Chart(degree, {
+        type: 'pie',
+        data: {
+            labels: ['Associate Degree', 'Bachelors Degree', 'M.Phil Degree', 'Post-Graduate Diploma', 'Doctorate'],
+            datasets: [{
+                label: '# of Students',
+                data: [
+                    @Model.students.Count(s => s.DegreeTitle== "Associate Degree"),
+                    @Model.students.Count(s => s.DegreeTitle== "Bachelors Degree"),
+                    @Model.students.Count(s => s.DegreeTitle== "M.Phil Degree"),
+                    @Model.students.Count(s => s.DegreeTitle== "Post-Graduate Diploma"),
+                    @Model.students.Count(s => s.DegreeTitle== "Doctorate")
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Degree Distribution'
+                }
+            }
+        }
+    });
+    var genderChart = new Chart(gender, {
+        type: 'pie',
+        data: {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                label: '# of Students',
+                data: [
+                    @Model.students.Count(s => s.Gender=="Male"),
+                    @Model.students.Count(s => s.Gender== "Female")
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Gender Distribution'
+                }
+            }
+        }
+    });
+
+    var submissionsDates = @Html.Raw(Json.Serialize(Model.Submissions.Keys.Select(k => k.Date.ToString("dd/MM/yyy")).ToList()));
+    var submissionsCounts = @Html.Raw(Json.Serialize(Model.Submissions.Values.ToList()));
+
+    var submissionsChart = new Chart(submissions, {
+        type: 'line',
+        data: {
+            labels: submissionsDates,
+            datasets: [{
+                label: '# of Submissions',
+                data: submissionsCounts,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Submissions Chart'
+                }
+            }
+        }
+    });
+
+    var actionsDates = @Html.Raw(Json.Serialize(Model.Actions.Keys.Select(k => k.Date.ToString("dd/MM/yyy")).ToList()));
+    var actionsCounts = @Html.Raw(Json.Serialize(Model.Actions.Values.ToList()));
+
+    var actionsChart = new Chart(actions, {
+        type: 'line',
+        data: {
+            labels: actionsDates,
+            datasets: [{
+                label: '# of Activities',
+                data: actionsCounts,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Last 30 Days Activity'
+                }
+            }
+        }
+    });
+
+    var actionHours = @Html.Raw(Json.Serialize(Model.ActionsByHour.Keys.ToList()));
+    var actionsHoursCount = @Html.Raw(Json.Serialize(Model.ActionsByHour.Values.ToList()));
+
+    var LastDayActionsChart = new Chart(actionsByHour, {
+        type: 'line',
+        data: {
+            labels: actionHours,
+            datasets: [{
+                label: '# of Activities',
+                data: actionsHoursCount,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    position: 'bottom',
+                    text: 'Last 24 hour Activity Chart'
+                }
+            }
+        }
+    });
+
+</script>
+
+
+
+

@@ -1,0 +1,40 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Gradient header */
+thead th {
+    background-image: linear-gradient(to right, #4568DC, #B06AB3); /* New gradient colors */
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Table spacing */
+.table {
+    margin-top: 20px;
+}
+
+    /* Button styling */
+    .table td a.btn {
+        margin-bottom: 5px;
+    }

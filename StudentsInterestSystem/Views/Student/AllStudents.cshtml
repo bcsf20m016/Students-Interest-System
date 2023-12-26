@@ -1,0 +1,54 @@
+﻿@model List<StudentsInterestSystem.Models.Student>
+
+@{
+    ViewBag.Title = "All Students";
+}
+
+<h1>Students List</h1>
+
+<table class="table table-bordered table-striped table-hover mb-5" id="StudentsTable">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col" style="border-radius: 10px 0 0 0;">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Roll Number</th>
+            <th scope="col">Department</th>
+            <th scope="col">Degree</th>
+            <th scope="col">DOB</th>
+            <th scope="col">City</th>
+            <th scope="col">Interest</th>
+            <th scope="col" style="border-radius: 0 10px 0 0;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <th scope="row">@student.Id</th>
+                <td>@student.Name</td>
+                <td>@student.RollNo</td>
+                <td>@student.Department</td>
+                <td>@student.DegreeTitle</td>
+                <td>@student.DOB.ToString("dd/MM/yyyy")</td>
+                <td>@student.City</td>
+                <td>@student.Interest</td>
+                <td>
+                    <a asp-controller="Student" asp-action="ViewStudent" asp-route-id="@student.Id" class="btn btn-sm btn-primary mr-2">View</a>
+                    <a asp-controller="Student" asp-action="EditStudent" asp-route-id="@student.Id" class="btn btn-sm btn-info mr-2">Edit</a>
+                    <a href="#" onclick="confirmDelete(@student.Id)" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this student?")) {
+            window.location.href = "/Student/DeleteStudent?id=" + id;
+        }
+    }</script>
+
+<script src="~/js/site.js"></script>
+
+

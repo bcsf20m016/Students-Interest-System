@@ -1,0 +1,138 @@
+﻿@model StudentsInterestSystem.ViewModels.AddStudentViewModel
+
+@{
+    ViewBag.Title = "Add Student";
+}
+
+@if (TempData["StudentExists"] != null && TempData["StudentExists"].ToString() == "false")
+{
+    <p class="text-success">* Student added successfully</p>
+}
+else if (TempData["StudentExists"] != null && TempData["StudentExists"].ToString() == "true")
+{
+    <p class="text-danger">* Student already exists</p>
+}
+else if (TempData["StudentUpdated"] != null && TempData["StudentUpdated"].ToString() == "true")
+{
+    <p class="text-success">* Student updated successfully</p>
+}
+else if (TempData["StudentUpdated"] != null && TempData["StudentUpdated"].ToString() == "false")
+{
+    <p class="text-danger">* Student doesn't exist</p>
+}
+
+<form id="addStudentForm" method="post" action="AddStudent" class="container">
+    <h1 class="text-center">Student Registration Form</h1> <br />
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" class="form-control" id="fullName" asp-for="Name" required>
+            </div><br />
+
+            <div class="form-group">
+                <label for="rollNumber">Roll Number</label>
+                <input type="text" class="form-control" id="rollNumber" asp-for="RollNo" required>
+            </div><br />
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" asp-for="Email" required>
+            </div><br />
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="form-control" id="gender" asp-for="Gender" required>
+                    <option value="Male" selected>Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div><br />
+
+            <div class="form-group">
+                <label for="DOB">Date of Birth</label>
+                <input type="date" class="form-control" id="DOB" asp-for="DOB" required>
+            </div><br />
+
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" asp-for="City" required>
+            </div> <br />
+
+        </div>
+        <div class="col-md-6">
+
+            <div class="form-group">
+                <label for="interest">Interest</label>
+                <select class="form-control" id="interest" asp-for="Interest" required>
+                    @foreach (var interest in ViewBag.Interests)
+                    {
+                        <option value="@interest">@interest</option>
+                    }
+                    <option value="other">Other</option>
+                </select>
+            </div> <br />
+
+            <div id="StudentInterest" class="form-group" style="display: none;">
+                <label for="getInterest">Enter Your Interest</label>
+                <input type="text" id="getInterest" class="form-control" asp-for="stdInterest" /> <br />
+            </div>
+
+            <div class="form-group">
+                <label for="department">Department</label>
+                <select class="form-control" id="department" asp-for="Department" required>
+                    <option value="Computer Science" selected>Computer Science</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Information Technology">Information Technology</option>
+                </select>
+            </div> <br />
+
+            <div class="form-group">
+                <label for="degreeTitle">Degree Title</label>
+                <select class="form-control" id="degreeTitle" asp-for="DegreeTitle" required>
+                    <option value="Associate Degree">Associate Degree</option>
+                    <option value="Bachelors Degree">Bachelors Degree</option>
+                    <option value="M.Phil Degree">M.Phil Degree</option>
+                    <option value="Post-Graduate Diploma">Post-Graduate Diploma</option>
+                    <option value="Doctorate">Doctorate</option>
+                </select>
+            </div> <br />
+
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" class="form-control" id="subject" asp-for="Subject" required>
+            </div> <br />
+
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" class="form-control" id="startDate" asp-for="StartDate" required>
+            </div> <br />
+
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" class="form-control" id="endDate" asp-for="EndDate" required>
+            </div> <br />
+
+        </div>
+    </div>
+    <button type='submit' class="btn btn-primary btn-block">Add</button>
+</form>
+<br />
+
+<form method="get" action="/Student/AllStudents">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+<script>document.addEventListener("DOMContentLoaded", function () {
+        var inputInterest = document.getElementById("interest");
+        var additionalFieldGroup = document.getElementById("StudentInterest");
+
+        inputInterest.addEventListener("change", function () {
+            if (inputInterest.value === "other") {
+                additionalFieldGroup.style.display = "block";
+            }
+            else {
+                additionalFieldGroup.style.display = "none";
+            }
+        });
+    });</script>
